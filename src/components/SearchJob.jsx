@@ -1,13 +1,14 @@
 import { Component } from "react";
-import { Container, Row, Col, Form } from 'react-bootstrap'
+import { Container, Row, Col, Form, Spinner } from 'react-bootstrap'
 import Job from './Job'
 import uniqid from 'uniqid'
 import { getJobsAction } from "../actions";
 import { connect } from "react-redux";
+
 const mapStateToProps = state => state
 
 const mapDispatchToProps = (dispatch) => ({
-    getJobs: (query) => dispatch(getJobsAction(query))
+    getJobs: (query, x) => dispatch(getJobsAction(query, x))
 })
 
 class SearchJob extends Component {
@@ -20,18 +21,7 @@ class SearchJob extends Component {
     handleSubmit = async (e) => {
         e.preventDefault()
         console.log('this.state.query:', this.state.query)
-        this.props.getJobs(this.state.query)
-
-        // const response = await fetch(`https://remotive.io/api/remote-jobs?search=${this.state.query}`)
-
-        // if (!response.ok) {
-        //     alert('Error fetching results')
-        //     return
-        // }
-
-        // const { jobs } = await response.json()
-
-        // this.setState({ jobs })
+        this.props.getJobs(this.state.query, "search")
 
     }
 
@@ -56,8 +46,20 @@ class SearchJob extends Component {
                         </Row>
                     </Col>
                     <Col xs={10} className='mx-auto mb-5'>
+                        {this.props.jobs.loading ?
+                            <>
+                                <Spinner animation="border" variant="primary" />
+                            </>
+                            :
+                            <>
+
+                                {
+                                    this.props.jobs.stock.map(jobData => <Job key={uniqid()} data={jobData} />)
+                                }
+                            </>
+                        }
                         {
-                            this.props.jobs.stock.map(jobData => <Job key={uniqid()} data={jobData} />)
+                            this.props.jobs.error && <p>WE GOT AN ERROR!</p>
                         }
                     </Col>
                 </Row>

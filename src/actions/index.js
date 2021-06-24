@@ -1,12 +1,12 @@
 
-export const getJobsAction = (query) => {
+export const getJobsAction = (query, x) => {
   return async (dispatch, getState) => {
     try {
       dispatch({
         type: 'SET_LOADING',
         payload: true,
       })
-      let resp = await fetch(`https://remotive.io/api/remote-jobs?search=${query}`)
+      let resp = await fetch(`https://remotive.io/api/remote-jobs?${x}=${query}`)
       // console.log(getState())
       if (resp.ok) {
         const { jobs } = await resp.json()
